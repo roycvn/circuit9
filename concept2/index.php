@@ -1,7 +1,4 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<script src='angular.min.js'></script>
-<script src='app.js'></script>
-<script src='home.js'></script>
 <html>
         <head>
                 <title>REST API</title>
@@ -23,31 +20,64 @@
                         .weather_report table tr td{padding:10px;}
                         .weather_report .labeltxt{color:#333;}
                         .weather_report table tr td:last-child{font-weight:bold; color:#333;}
-                        .googlemap{width:35%; background:url('loader.gif') no-repeat #fff; background-position:center center;}
+                        .getdata{width:35%; background:#fff;}
                 </style>
         </head>
         
         <body class='effects'>
                 <h1>REST API</h1>
                 <div class='container'>
+                 
                   <div class='whitebox weather_report fl'>
                         <div id='container'>
-                                <div id='listings' ng-app='angular_post_listings' ng-controller='listings_controller'>
+                                <form class='listingsfrm' action='postdata.php' enctype='multipart/form-data'>
+                                <div id='listings'>
                                      <table>
                                                 <tr><td><div class='labeltxt'>Image</div></td><td>
-                                                <input type='file' size='40' ng-model='image' />
+                                                <input type="file" name='image' />
                                                 </td></tr>
                                                 <tr><td><div class='labeltxt'>Label</div></td><td>
-                                                <input type='text' size='40' ng-model='label' /></td></tr>
+                                                <input type='text' size='40' name='label' /></td></tr>
                                                 <tr><td></td><td>
-                                                <input type='button' value='Save Listing' ng-click='post_listing()'/></td></tr>
+                                                <input type='submit' value='Save Listing' name='submit'/></td></tr>
                                      </table>                                                
                                      <div id='message'></div>
                                 </div>
+                                </form>
                         </div>
                   </div>
+                  <div class='whitebox getdata fl'></div>
                   <div class='cl'></div>
                 </div>
         </body>
+<script type='text/javascript'>
+$(document).ready(function (e){
+  $(".listingsfrm").on('submit',(function(e){
+          e.preventDefault();
+          $.ajax({
+            url: "postdata.php",
+            type: "POST",
+            data:  new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(data){
+                $("#message").html(data);
+                request_rest_api();
+            },
+            error: function(){} 	        
+          });
+  }));
+});
+
+function request_rest_api()
+{
+        $.ajax({
+                url:'request_info_api.php',
+                success:function(data){$('.getdata').html(data);}                
+        });
         
+}
+request_rest_api();
+</script>
 </html>
